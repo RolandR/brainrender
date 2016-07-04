@@ -1,20 +1,45 @@
 
 var renderer;
-var imageLoader = new ImageLoader();
 
-function ImageLoader(){
+var water = {
+	 min: 1
+	,max: 176
+	,imageCount: 176
+	,prefix: "./larger/sagittal"
+	,zeroes: 4
+	,imagesWidth: 176
+	,imagesHeight: 176
+}
+
+var vessels = {
+	 min: 1
+	,max: 160
+	,imageCount: 160
+	,prefix: "./other/othersagittal"
+	,zeroes: 4
+	,imagesWidth: 160
+	,imagesHeight: 160
+}
+
+function load(dataset){
+
+	document.getElementById("loadingBar").style.width = "0%";
+	document.getElementById("loadingText").innerHTML = "Loading...";
+	document.getElementById("loading").style.display = "block";
+	
+	setTimeout(function(){
+		imageLoader = new ImageLoader(dataset);
+	}, 15);
+}
+
+var imageLoader = new ImageLoader(water);
+
+function ImageLoader(dataset){
+
+	var {min, max, imageCount, prefix, zeroes, imagesWidth, imagesHeight} = dataset;
 
 	renderer = new Renderer();
-	
-	var prefix = "./larger/sagittal";
-	var min = 1;
-	var max = 176;
-	var imageCount = 176;
-	var zeroes = 4;
 	var loadingBar = document.getElementById("loadingBar");
-
-	var imagesWidth = 176;
-	var imagesHeight = 176;
 
 	var imagesLoaded = 0;
 
