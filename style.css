@@ -1,0 +1,167 @@
+*{
+	border: none;
+	margin: 0px;
+	padding: 0px;
+	box-sizing: border-box;
+}
+
+body{
+	overflow: hidden;
+	font-family: sans-serif;
+}
+
+#renderCanvas{
+	height: 100%;
+	width: 100%;
+	background-color: #888888;
+
+	image-rendering: optimizeSpeed;             /* Older versions of FF          */
+	image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
+	image-rendering: -webkit-optimize-contrast; /* Safari                        */
+	image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+	image-rendering: pixelated;                 /* Awesome future-browsers       */
+	-ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+}
+
+#debug{
+	display: none;
+	position: absolute;
+	z-index: 10000;
+	top: 0px;
+	left: 0px;
+}
+
+#controls{
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	padding: 5px 10px;
+	background-color: #CCCCCC;
+	line-height: 1.3em;
+	width: 220px;
+}
+
+h2{
+	font-weight: normal;
+	font-size: 19px;
+	line-height: 1.5em;
+	margin-top: 10px;
+}
+
+hr{
+	border-top: 1px #888888 solid;
+	margin: -2px 0px 6px 0px;
+}
+
+input[type="checkbox"]{
+	display: inline-block;
+	height: 16px;
+	width: 16px;
+}
+
+#transferImage{
+	width: 100%;
+	height: 10px;
+	margin-top: 3px;
+}
+
+img.colorImage{
+	width: 100%;
+	padding: 2px;
+	height: 20px;
+}
+
+.uploadLabel{
+	margin-bottom: 0px;
+}
+
+button,
+.uploadLabel,
+.colorImage{
+	background-color: #FFFFFF;
+	background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), rgba(180, 180, 180, 0.3));
+	border: 1px #AAAAAA outset;
+	color: #000000;
+	cursor: pointer;
+	padding: 4px;
+	line-height: 1em;
+	display: inline-block;
+	text-align: center;
+	width: 100%;
+}
+
+button:hover,
+.uploadLabel:hover,
+.colorImage:hover{
+	background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.6), rgba(180, 180, 180, 0.5));
+	border: 1px rgba(0, 0, 0, 0.6) outset;
+}
+
+.uploadLabel input{
+	visibility: hidden;
+	display: inline;
+	height: 0px;
+	width: 0px;
+}
+
+h1{
+	font-weight: normal;
+	font-size: 24px;
+	line-height: 1.5em;
+}
+
+.setbg{
+	height: 16px;
+	width: calc(12.5% - 4px);
+	cursor: pointer;
+	border: 1px #FFFFFF solid;
+	outline: 1px #555555 solid;
+	display: inline-block;
+	
+}
+
+#loading{
+	position: absolute;
+	top: 30%;
+	left: 50%;
+	margin-left: -150px;
+	width: 300px;
+	background-color: #FFFFFF;
+	border: 1px #555555 solid;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
+	overflow: hidden;
+}
+
+#loadingText{
+	display: block;
+	margin: 5px;
+}
+
+#loadingContainer{
+	width: calc(100% - 20px);
+	margin: 0px 10px 15px 10px;
+	overflow: hidden;
+	height: 25px;
+	border: 1px #555555 solid;
+	background-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1));
+}
+
+#loadingBar{
+	width: 0%;
+	background-color: #00FFFF;
+	height: 100%;
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4));
+}
+
+input[type="number"]{
+	width: 50px;
+	border: 1px #AAAAAA solid;
+	padding: 3px;
+	height: 23px;
+}
+
+#roiContainer>span{
+	display: inline-block;
+	width: 20px;
+	margin-top: 3px;
+}

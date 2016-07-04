@@ -128,3 +128,7 @@ function updateRoi(){
 		imageLoader.prepareImages(true);
 	}, 15);
 }
+
+function setBackground(div){
+	document.getElementById('renderCanvas').style.backgroundColor = div.style.backgroundColor;
+}
