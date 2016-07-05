@@ -5,14 +5,28 @@
 	box-sizing: border-box;
 }
 
+html, body{
+	height: 100%;
+	width: 100%;
+}
+
 body{
 	overflow: hidden;
 	font-family: sans-serif;
 }
 
+#canvasContainer{
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	left: 240px;
+}
+
 #renderCanvas{
 	height: 100%;
-	width: 100%;
+	width: 100%;	
+	
 	background-color: #888888;
 
 	image-rendering: optimizeSpeed;             /* Older versions of FF          */
@@ -33,12 +47,13 @@ body{
 
 #controls{
 	position: absolute;
-	top: 10px;
-	left: 10px;
 	padding: 5px 10px;
 	background-color: #CCCCCC;
 	line-height: 1.3em;
-	width: 220px;
+	width: 240px;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 h2{
@@ -122,6 +137,7 @@ h1{
 
 #loading{
 	position: absolute;
+	z-index: 9000;
 	top: 30%;
 	left: 50%;
 	margin-left: -150px;
@@ -165,3 +181,38 @@ input[type="number"]{
 	width: 20px;
 	margin-top: 3px;
 }
+
+#densityLabel{
+	width: 109px;
+	margin-top: 3px;
+	cursor: help;
+	display: inline-block;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

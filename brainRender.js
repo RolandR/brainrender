@@ -1,7 +1,10 @@
 
 var autorotate = true;
+var debug = document.getElementById("debug");
 
 function Renderer(){
+
+	autorotate = document.getElementById("autorotate").checked;
 	
 	var framesSinceCount = 0;
 	
@@ -12,9 +15,11 @@ function Renderer(){
 	var context = canvas.getContext("2d");
 
 	var fpsMeter = document.getElementById("fps");
+
+	var canvasContainer = document.getElementById("canvasContainer");
 	
-	canvas.width = ~~(window.innerWidth/3);
-	canvas.height = ~~(window.innerHeight/3);
+	canvas.width = ~~(canvasContainer.offsetWidth/3);
+	canvas.height = ~~(canvasContainer.offsetHeight/3);
 	
 	var width = canvas.width;
 	var height = canvas.height;
@@ -23,14 +28,30 @@ function Renderer(){
 
 	var objectSize = 5;
 
+	var rotation = [0, 0, 0];
+
+	var xd = 0;
+	var yd = 0;
+	var zd = 0;
+
 	window.onresize = function(){
-		canvas.width = ~~(window.innerWidth/3);
-		canvas.height = ~~(window.innerHeight/3);
+		canvas.width = ~~(canvasContainer.offsetWidth/3);
+		canvas.height = ~~(canvasContainer.offsetHeight/3);
+		
+		var oldWidth = width;
+		var oldHeight = height;
 		
 		width = canvas.width;
 		height = canvas.height;
 
 		imageData = new ImageData(width, height);
+
+		for(var i = 0; i < objects.length; i+=objectSize){
+			translate(i, [(width-oldWidth)/4, 0, (height-oldHeight)/4]);
+		}
+		rotateCenter[0] += (width-oldWidth)/4;
+		rotateCenter[2] += (height-oldHeight)/4;
+		
 	}
 	
 	var args = window.location.search;
@@ -53,7 +74,19 @@ function Renderer(){
 
 	var PI = Math.PI;
 
-	window.addEventListener('wheel', function(e) {
+	/*window.addEventListener('touchend', function(e) {
+		if (document.fullscreenEnabled) {
+			document.documentElement.requestFullscreen();
+		} else if (document.webkitFullscreenEnabled) {
+			document.documentElement.webkitRequestFullscreen();
+		} else if (document.mozFullScreenEnabled) {
+			document.documentElement.mozRequestFullScreen();
+		}
+		
+		document.getElementById("controls").style.display = "none";
+	});*/
+
+	canvas.addEventListener('wheel', function(e) {
 		//console.log(e.deltaY);
 		if(e.shiftKey){
 			zoom += zoom * 0.001 * e.deltaX;
@@ -74,6 +107,9 @@ function Renderer(){
 	var moveZ = 0;
 	var panX = 0;
 	var panY = 0;
+
+	var lastPose = [0, 0, 0];
+	var poseDiff = [0, 0, 0];
 
 	canvas.addEventListener('mousemove', function(e) {
 		if(panning || moving){
@@ -142,6 +178,10 @@ function Renderer(){
 		//var data = [];
 
 		var x, y, z, vanishY, value;
+
+		if(!objects){
+			console.log("ouch!");
+		}
 		
 		for(var i = 0; i < objects.length; i+=objectSize){
 
@@ -192,7 +232,31 @@ function Renderer(){
 		if(autorotate){
 			for(var i = 0; i < objects.length; i+=objectSize){
 				rotateZ(i, rotateAngle, rotateCenter);
-				//rotate(objects[i], [0.0111111, 0.007631, 0.01], [width/2, 150, width/2]);
+			}
+		}
+		
+		if(vrDisplay){
+			var pose = vrDisplay.getPose().orientation;
+
+			pose = quaternionToEuler(pose[0], pose[1], pose[2], pose[3]);
+			pose = [pose.x, pose.y, pose.z];
+			
+			if(!lastPose){
+				poseDiff = [0, 0, 0];
+			} else {
+				poseDiff = [pose[0]-lastPose[0], pose[1]-lastPose[1], pose[2]-lastPose[2]];
+			}
+			lastPose = pose;
+			//debug.innerHTML = poseDiff[0] + "<br />" + pose[0] + "<br />" + poseDiff[1] + "<br />" + pose[1] + "<br />" + poseDiff[2] + "<br />" + pose[2];
+
+			var xAngle = [Math.sin(poseDiff[0]), Math.cos(poseDiff[0])];
+			var yAngle = [Math.sin(-poseDiff[1]), Math.cos(-poseDiff[1])];
+			var zAngle = [Math.sin(-poseDiff[2]), Math.cos(-poseDiff[2])];
+			
+			for(var i = 0; i < objects.length; i+=objectSize){
+				rotateX(i, xAngle, rotateCenter);
+				rotateZ(i, yAngle, rotateCenter);
+				rotateY(i, zAngle, rotateCenter);
 			}
 		}
 
@@ -210,6 +274,10 @@ function Renderer(){
 		}
 
 		if(moveX || moveZ){
+
+			moveX = moveX * 0.3;
+			moveZ = moveZ * 0.3;
+			
 			for(var i = 0; i < objects.length; i+=objectSize){
 				translate(i, [moveX, 0, moveZ]);
 			}
@@ -242,8 +310,8 @@ function Renderer(){
 		var x = objects[i  ] - center[0]
 		var z = objects[i+2] - center[2]
 
-		objects[i+2] = z * angle[1] - x * angle[0] + center[0];
-		objects[i  ] = z * angle[0] + x * angle[1] + center[2];
+		objects[i+2] = z * angle[1] - x * angle[0] + center[2];
+		objects[i  ] = z * angle[0] + x * angle[1] + center[0];
 	}
 
 	function rotateZ(i, angle, center){
@@ -276,7 +344,11 @@ function Renderer(){
 		return number;
 	}
 	
-	function setPoints(points, xDim, yDim, zDim, colorMapping){
+	function setPoints(points, xd, yd, zd, colorMapping){
+
+		xDim = xd;
+		yDim = yd;
+		zDim = zd;
 	
 		//objects = new Float32Array(objectSize * points.length);
 		objects = [];
@@ -311,8 +383,18 @@ function Renderer(){
 			//translate(i, [0, 400, 0]);
 			
 			translate(i, [Math.random()*r, Math.random()*r, Math.random()*r]);
+
+			if(vrDisplay){
+				translate(i, [0, 0, 40]);
+			}
 		}
 		rotateCenter = [width/2, World.vanishingPointY/5, 2*height/5];
+
+		if(vrDisplay){
+			rotateCenter = [width/2, World.vanishingPointY/5, 2*height/5 + 20];
+		}
+
+		return true;
 	}
 
 	function changeTransferImage(image){
@@ -343,9 +425,10 @@ function Renderer(){
 		objects[e+1] = 0;
 		objects[e+2] = 0;
 		objects[e+3] = 10000;
+		objects[e+4] = 255;
 		colors[e+0] = 0;
-		colors[e+1] = 0;
-		colors[e+2] = 255;
+		colors[e+1] = 255;
+		colors[e+2] = 0;
 		colors[e+3] = 255;
 		e+=objectSize;
 
@@ -353,9 +436,10 @@ function Renderer(){
 		objects[e+1] = 0;
 		objects[e+2] = 0;
 		objects[e+3] = 10000;
+		objects[e+4] = 255;
 		colors[e+0] = 0;
-		colors[e+1] = 0;
-		colors[e+2] = 255;
+		colors[e+1] = 255;
+		colors[e+2] = 0;
 		colors[e+3] = 255;
 		e+=objectSize;
 
@@ -363,9 +447,10 @@ function Renderer(){
 		objects[e+1] = yDim;
 		objects[e+2] = 0;
 		objects[e+3] = 10000;
+		objects[e+4] = 255;
 		colors[e+0] = 0;
-		colors[e+1] = 0;
-		colors[e+2] = 255;
+		colors[e+1] = 255;
+		colors[e+2] = 0;
 		colors[e+3] = 255;
 		e+=objectSize;
 
@@ -373,9 +458,10 @@ function Renderer(){
 		objects[e+1] = yDim;
 		objects[e+2] = 0;
 		objects[e+3] = 10000;
+		objects[e+4] = 255;
 		colors[e+0] = 0;
-		colors[e+1] = 0;
-		colors[e+2] = 255;
+		colors[e+1] = 255;
+		colors[e+2] = 0;
 		colors[e+3] = 255;
 		e+=objectSize;
 
@@ -383,9 +469,10 @@ function Renderer(){
 		objects[e+1] = 0;
 		objects[e+2] = zDim;
 		objects[e+3] = 10000;
+		objects[e+4] = 255;
 		colors[e+0] = 0;
-		colors[e+1] = 0;
-		colors[e+2] = 255;
+		colors[e+1] = 255;
+		colors[e+2] = 0;
 		colors[e+3] = 255;
 		e+=objectSize;
 
@@ -393,9 +480,10 @@ function Renderer(){
 		objects[e+1] = 0;
 		objects[e+2] = zDim;
 		objects[e+3] = 10000;
+		objects[e+4] = 255;
 		colors[e+0] = 0;
-		colors[e+1] = 0;
-		colors[e+2] = 255;
+		colors[e+1] = 255;
+		colors[e+2] = 0;
 		colors[e+3] = 255;
 		e+=objectSize;
 
@@ -403,9 +491,10 @@ function Renderer(){
 		objects[e+1] = yDim;
 		objects[e+2] = zDim;
 		objects[e+3] = 10000;
+		objects[e+4] = 255;
 		colors[e+0] = 0;
-		colors[e+1] = 0;
-		colors[e+2] = 255;
+		colors[e+1] = 255;
+		colors[e+2] = 0;
 		colors[e+3] = 255;
 		e+=objectSize;
 
@@ -413,9 +502,10 @@ function Renderer(){
 		objects[e+1] = yDim;
 		objects[e+2] = zDim;
 		objects[e+3] = 10000;
+		objects[e+4] = 255;
 		colors[e+0] = 0;
-		colors[e+1] = 0;
-		colors[e+2] = 255;
+		colors[e+1] = 255;
+		colors[e+2] = 0;
 		colors[e+3] = 255;
 		e+=objectSize;
 	}
@@ -437,7 +527,6 @@ function changeTransferImage(file){
 	//console.log(colorMapping);
 	image.onload = function(){renderer.changeTransferImage(image)};
 }
-
 
 
 

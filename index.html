@@ -1,13 +1,16 @@
 <!doctype html>
-<html>
+<html allowfullscreen>
 	<head>
 		<meta charset="utf-8" /> 
 		<title>
 			MRI Rendering
 		</title>
+		<meta name="viewport" content="width=device-width, initial-scale=0.7, maximum-scale=0.7, user-scalable=no"> <!-- No pinch zoom on mobile -->
+		<meta name="mobile-web-app-capable" content="yes"> <!-- Launch fullscreen when added to home screen -->
+		<meta name="apple-mobile-web-app-capable" content="yes"> <!-- Fullscreen Landscape on iOS -->
 		<link rel="stylesheet" type="text/css" media="all" href="./style.css" /> 
 	</head>
-	<body>
+	<body fullscreen>
 		<div id="loading">
 			<span id="loadingText">Loading...</span>
 			<div id="loadingContainer">
@@ -23,7 +26,7 @@
 			Right mouse drag to rotate<br />
 			Scroll to move in / out<br />
 			Shift+Scroll to zoom<br />
-			<input type="checkbox" checked id="autorotate" onclick="autorotate = this.checked" /> <label for="autorotate">Auto-Rotate</label><br />
+			<input type="checkbox" id="autorotate" onclick="autorotate = this.checked" /> <label for="autorotate">Auto-Rotate</label><br />
 			<h2>Color mappings</h2>
 			<image onclick="renderer.changeTransferImage(this)" src="colorMappings/rainbow.png" class="colorImage"/><br />
 			<image onclick="renderer.changeTransferImage(this)" src="colorMappings/smallrainbows.png" class="colorImage"/><br />
@@ -52,23 +55,24 @@
 				<input type="number" id="roiXMin" value="0" min="0" max="100" />% to
 				<input type="number" id="roiXMax" value="100" min="0" max="100" />%<br />
 				<span>Y: </span>
-				<input type="number" id="roiYMin" value="50" min="0" max="100" />% to
+				<input type="number" id="roiYMin" value="0" min="0" max="100" />% to
 				<input type="number" id="roiYMax" value="100" min="0" max="100" />%<br />
 				<span>Z: </span>
 				<input type="number" id="roiZMin" value="0" min="0" max="100" />% to
 				<input type="number" id="roiZMax" value="100" min="0" max="100" />%<br />
 			</div>
-			<button style="width:60px; margin: 4px 0px 10px 140px;" onclick="updateRoi()">Update</button><br />
+			<span id="densityLabel" title="Lower is faster">Point Density:</span><input type="number" id="density" value="50" min="0" max="100" />%<button style="width:60px; margin: 4px 0px 10px 140px;" onclick="updateRoi()">Update</button><br />
 			<hr />
 			<span id="points">Loading...</span><br />
 			<span id="fps"></span><br />
 			<span style="float: right;">By <a href="http://rolandrytz.ch">Roland Rytz</a></span>
 		</div>
-		<canvas oncontextmenu="return false;" id="renderCanvas" width="600" height="600">
-			
-		</canvas>
+		<div id="canvasContainer">
+			<canvas oncontextmenu="return false;" id="renderCanvas" width="600" height="600"></canvas>
+		</div>
 		<div id="debug"></div>
-	</body>
+	</body>		
+	<script type="text/javascript" src="./aux.js"></script>
 	<script type="text/javascript" src="./brainRender.js"></script>
 	<script type="text/javascript" src="./brainPrepare.js"></script>
 </html>
