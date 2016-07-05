@@ -383,16 +383,8 @@ function Renderer(){
 			//translate(i, [0, 400, 0]);
 			
 			translate(i, [Math.random()*r, Math.random()*r, Math.random()*r]);
-
-			if(vrDisplay){
-				translate(i, [0, 0, 40]);
-			}
 		}
 		rotateCenter = [width/2, World.vanishingPointY/5, 2*height/5];
-
-		if(vrDisplay){
-			rotateCenter = [width/2, World.vanishingPointY/5, 2*height/5 + 20];
-		}
 
 		return true;
 	}

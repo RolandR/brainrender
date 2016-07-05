@@ -3,6 +3,7 @@
 var vrDisplay;
 
 if (navigator.getVRDisplays) {
+	document.getElementById("autorotate").checked = false;
 	document.getElementById("density").value = 20;
 	navigator.getVRDisplays().then(function (displays) {
 		if(displays.length > 0){
@@ -67,7 +68,7 @@ function ImageLoader(dataset){
 	var image = new Image();
 	image.onload = function(){
 		imagesLoaded++;
-		loadingBar.style.width = (imagesLoaded/imageCount)*100 + "%";
+		loadingBar.style.width = (imagesLoaded/2)*100 + "%";
 		if(imagesLoaded == 2){
 			document.getElementById("loadingText").innerHTML = "Processing...";
 			setTimeout(prepareImages, 15);
@@ -78,6 +79,7 @@ function ImageLoader(dataset){
 	var colorImg = new Image();
 	colorImg.onload = function(){
 		imagesLoaded++;
+		loadingBar.style.width = (imagesLoaded/2)*100 + "%";
 		if(imagesLoaded == 2){
 			document.getElementById("loadingText").innerHTML = "Processing...";
 			setTimeout(prepareImages, 15);
