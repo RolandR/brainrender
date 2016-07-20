@@ -5,7 +5,7 @@
 		<title>
 			MRI Rendering
 		</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"> <!-- No pinch zoom on mobile -->
+		<meta name="viewport" content="width=device-width, initial-scale=0.7, maximum-scale=0.7, user-scalable=no"> <!-- No pinch zoom on mobile -->
 		<meta name="mobile-web-app-capable" content="yes"> <!-- Launch fullscreen when added to home screen -->
 		<meta name="apple-mobile-web-app-capable" content="yes"> <!-- Fullscreen Landscape on iOS -->
 		<link rel="stylesheet" type="text/css" media="all" href="./style.css" /> 
@@ -17,7 +17,6 @@
 				<div id="loadingBar"></div>
 			</div>
 		</div>
-		<button id="fullscreenbutton" onclick="toggleFullscreen();"></button>
 		<div id="controls">
 			<h1>MRI Rendering</h1>
 			<hr />
@@ -28,16 +27,16 @@
 			Scroll to move in / out<br />
 			Shift+Scroll to zoom<br />
 			<input type="checkbox" id="autorotate" checked onclick="autorotate = this.checked" /> <label for="autorotate">Auto-Rotate</label><br />
-			<a href="./nogl">Non-WebGL Fallback</a>
+			<a href="..">WebGL Version</a>
 			<h2>Color mappings</h2>
-			<img onclick="renderer.changeTransferImage(this, true)" src="colorMappings/rainbow.png" class="colorImage"/><br />
-			<img onclick="renderer.changeTransferImage(this, true)" src="colorMappings/smallrainbows.png" class="colorImage"/><br />
-			<img onclick="renderer.changeTransferImage(this, true)" src="colorMappings/colors.png" class="colorImage"/><br />
-			<img onclick="renderer.changeTransferImage(this, true)" src="colorMappings/blackwhite.png" class="colorImage"/><br />
-			<img onclick="renderer.changeTransferImage(this, true)" src="colorMappings/white.png" class="colorImage"/><br />
-			<img onclick="renderer.changeTransferImage(this, true)" src="colorMappings/blue.png" class="colorImage"/><br />
-			<img onclick="renderer.changeTransferImage(this, true)" src="colorMappings/extreme.png" class="colorImage"/><br />
-			<img onclick="renderer.changeTransferImage(this, true)" src="colorMappings/incandescent.png" class="colorImage"/><br />
+			<img onclick="renderer.changeTransferImage(this)" src="colorMappings/rainbow.png" class="colorImage"/><br />
+			<img onclick="renderer.changeTransferImage(this)" src="colorMappings/smallrainbows.png" class="colorImage"/><br />
+			<img onclick="renderer.changeTransferImage(this)" src="colorMappings/colors.png" class="colorImage"/><br />
+			<img onclick="renderer.changeTransferImage(this)" src="colorMappings/blackwhite.png" class="colorImage"/><br />
+			<img onclick="renderer.changeTransferImage(this)" src="colorMappings/white.png" class="colorImage"/><br />
+			<img onclick="renderer.changeTransferImage(this)" src="colorMappings/blue.png" class="colorImage"/><br />
+			<img onclick="renderer.changeTransferImage(this)" src="colorMappings/extreme.png" class="colorImage"/><br />
+			<img onclick="renderer.changeTransferImage(this)" src="colorMappings/incandescent.png" class="colorImage"/><br />
 			<label class="uploadLabel" for="uploadColor">
 				Upload (256x1 px)
 				<input id="uploadColor" type="file" accept="image/*" value="Upload..." onchange="changeTransferImage(this.files)">
@@ -63,9 +62,10 @@
 				<input type="number" id="roiZMin" value="0" min="0" max="100" />% to
 				<input type="number" id="roiZMax" value="100" min="0" max="100" />%<br />
 			</div>
-			<span id="densityLabel" title="Lower is faster">Point Density:</span><input type="number" id="density" value="100" min="0" max="100" />%<button style="width:60px; margin: 4px 0px 10px 140px;" onclick="updateRoi()">Update</button><br />
+			<span id="densityLabel" title="Lower is faster">Point Density:</span><input type="number" id="density" value="40" min="0" max="100" />%<button style="width:60px; margin: 4px 0px 10px 140px;" onclick="updateRoi()">Update</button><br />
 			<hr />
 			<span id="points">Loading...</span><br />
+			<span id="fps"></span><br />
 			<span style="float: right;">By <a href="http://rolandrytz.ch">Roland Rytz</a></span>
 		</div>
 		<div id="canvasContainer">
@@ -73,14 +73,6 @@
 		</div>
 		<div id="debug"></div>
 
-		<script type="text/javascript" src="./pointRenderer/quaternion.js"></script>
-		<script type="text/javascript" src="./pointRenderer/matrix.js"></script>
-		
-		<script type="text/javascript" src="./pointRenderer/vertexshader.js"></script>
-		<script type="text/javascript" src="./pointRenderer/fragmentshader.js"></script>
-		<script type="text/javascript" src="./pointRenderer/pointrender.js"></script>
-		
-		
 		<script type="text/javascript" src="./aux.js"></script>
 		<script type="text/javascript" src="./brainRender.js"></script>
 		<script type="text/javascript" src="./brainPrepare.js"></script>
