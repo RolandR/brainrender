@@ -212,7 +212,14 @@ a:hover{
 	background-size: cover;
 }
 
-
+#highResButton{
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	font-size: 12px;
+	line-height: 0em;
+	left: 85px;
+}
 
 
 
