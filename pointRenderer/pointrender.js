@@ -141,7 +141,7 @@ function PointRenderer(canvasId){
 		gl.uniform1f(zoomAttr, zoom);
 
 		
-		gl.uniform1f(pointSize, 0.0001/zoom);
+		gl.uniform1f(pointSize, 0.001/zoom);
 
 		// Clear the canvas
 		gl.clearColor(0, 0, 0, 0);
